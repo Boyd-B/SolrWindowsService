@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using SolrWindowsService.Config;
 
 namespace SolrWindowsService
 {
@@ -9,14 +10,15 @@ namespace SolrWindowsService
 
         public void Start()
         {
-            Log("starting service");
+            Log("Starting SolrCloud Service");
             try
             {
                 var config = SolrServiceConfigurationManager.GetSolrServiceConfiguration();
-                process.StartInfo.FileName = config.JavaExecutable;
+                process.StartInfo.FileName = config.FileName;
                 process.StartInfo.WorkingDirectory = config.WorkingDirectory;
-                process.StartInfo.Arguments = config.GetprocessStartArguments();
-                process.StartInfo.UseShellExecute = config.ShowConsole;
+                process.StartInfo.Arguments = config.CommandLineArgs;
+                process.StartInfo.UseShellExecute = true;
+                process.StartInfo.WindowStyle = ProcessWindowStyle.Minimized;
                 Log(process.ToString());
                 var result = process.Start();
                 Log("result of batch start: " + result);
@@ -27,14 +29,21 @@ namespace SolrWindowsService
                 Log("An error occurred: " + ex.Message);
                 throw;
             }
-            
+
         }
 
         public void Stop()
         {
-            Log("stopping service");
-            process.Kill();
-            process.Dispose();
+            Log("Stopping service");
+            try
+            {
+                process.Kill();
+                process.Dispose();
+            }
+            catch (Exception ex)
+            {
+                Log("An error occurred: " + ex.Message);
+            }
         }
 
         protected void Log(string message)

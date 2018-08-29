@@ -1,9 +1,7 @@
 using System.Collections;
 using System.Configuration;
-using Topshelf.Configuration;
-using Topshelf.Configuration.Dsl;
 
-namespace SolrWindowsService
+namespace SolrWindowsService.Config
 {
     public static class SolrServiceConfigurationManager
     {
